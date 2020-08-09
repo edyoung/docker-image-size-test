@@ -14,6 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name
 
@@ -22,7 +24,7 @@ jobs:
     - name: find the size info
       run: echo ::set-env name=SIZE::$(docker inspect my-image-name:latest --format "{{.Size}}")
     - name: checkout master's size_baseline 
-      run: git checkout origin/master -- size_baseline
+      run: git checkout master -- size_baseline
     - name: find the baseline size
       run: echo ::set-env name=PRE_BASE_SIZE::$(cat ${{github.workspace}}/size_baseline | jq .base)
     - name: find the baseline tools size
