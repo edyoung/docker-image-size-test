@@ -20,7 +20,7 @@ jobs:
     - name: update a comment with size
       run: |
         pullid=$(echo "${{github.ref }}" | sed 's!refs/pull/\([0-9]*\)/merge!\1!') \
-        echo "pull id $pullid"   
+        echo "pull id $pullid ref " \
         curl --request POST \
         --url https://api.github.com/repos/${{ github.repository }}/issues/$pullid/comments \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
