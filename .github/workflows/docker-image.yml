@@ -21,6 +21,8 @@ jobs:
       run: echo ::set-env name=ISSUEID::$(echo "${{github.ref }}" | sed 's!refs/pull/\([0-9]*\)/merge!\1!') 
     - name: find the size info
       run: echo ::set-env name=SIZE::$(docker inspect my-image-name:latest --format "{{.Size}}")
+    - name: checkout master's size_baseline 
+      run: git checkout origin/master -- size_baseline
     - name: find the baseline size
       run: echo ::set-env name=PRE_BASE_SIZE::$(cat ${{github.workspace}}/size_baseline | jq .base)
     - name: find the baseline tools size
