@@ -35,7 +35,7 @@ jobs:
         --header 'content-type: application/json' \
         --header 'Accept: application/vnd.github.v3+json' \
         --data "{
-          \"body\": \"Image size with this change is $(($SIZE / 1024))KB\"
+          \"body\": \"Image size with this change is $(($SIZE / 1048576)), delta $(($SIZE / 1048576 - $PRE_SIZE))MB\"
           }"
 
     #- uses: edyoung/docker-image-size-action@master
