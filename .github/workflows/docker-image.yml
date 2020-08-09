@@ -29,9 +29,9 @@ jobs:
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --header 'Accept: application/vnd.github.v3+json' \
-        --data '{
-          "body": "Image size with this change is $SIZE"
-          }'
+        --data "{
+          \"body\": \"Image size with this change is $SIZE\"
+          }"
 
     #- uses: edyoung/docker-image-size-action@master
     #  with:
