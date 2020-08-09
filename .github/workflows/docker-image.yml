@@ -17,6 +17,6 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
-    - uses: edyoung/docker-image-size-action@v0
+    - uses: edyoung/docker-image-size-action
       with:
-        who-to-greet: 'Bob'
+        image-name: 'my-image-name'
