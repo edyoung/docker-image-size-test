@@ -26,7 +26,7 @@ jobs:
     - name: update a comment with size
       run: |
         echo "pull id $ISSUEID size $SIZE pre $PRE_SIZE"  && \
-        echo "git tag -n -l size_baseline" && \
+        echo "git tag -n -l" && \
         curl --request POST \
         --url https://api.github.com/repos/${{ github.repository }}/issues/$ISSUEID/comments \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
