@@ -22,9 +22,7 @@ jobs:
     - name: find the size info
       run: echo ::set-env name=SIZE::$(docker inspect my-image-name:latest --format "{{.Size}}")
     - name: find the baseline size
-      run: |
-        git tag -l size_baseline | read -ra SIZES && \
-        echo ::set-env name=PRE_SIZE::${SIZES[1]}
+      run: echo ::set-env name=PRE_SIZE::$(git tag -l size_baseline | sed 's!size_baseline\s*\([0-9]*\)!\1!')
     - name: update a comment with size
       run: |
         echo "pull id $ISSUEID size $SIZE pre $PRE_SIZE"  && \
