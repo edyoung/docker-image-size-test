@@ -21,16 +21,20 @@ jobs:
       run: echo ::set-env name=ISSUEID::$(echo "${{github.ref }}" | sed 's!refs/pull/\([0-9]*\)/merge!\1!') 
     - name: find the size info
       run: echo ::set-env name=SIZE::$(docker inspect my-image-name:latest --format "{{.Size}}")
+    - name: find the baseline size
+      run: |
+        git tag -l size_baseline | read -ra SIZES && \
+        echo ::set-env name=PRE_SIZE::${SIZES[1]}
     - name: update a comment with size
       run: |
-        echo "pull id $ISSUEID size $SIZE"  && \
+        echo "pull id $ISSUEID size $SIZE pre $PRE_SIZE"  && \
         curl --request POST \
         --url https://api.github.com/repos/${{ github.repository }}/issues/$ISSUEID/comments \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
         --header 'Accept: application/vnd.github.v3+json' \
         --data "{
-          \"body\": \"Image size with this change is $(($SIZE / 1024))KB\"
+          \"body\": \"Image size with this change is $(($SIZE / 1024))KB, delta $(( ($SIZE / 1024) - $PRE_SIZE))\"
           }"
 
     #- uses: edyoung/docker-image-size-action@master
