@@ -14,9 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with: 
-        fetch-depth: 0
-    - name: Build the Docker image
+      name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name
 
     - name: find the pull request id
@@ -24,10 +22,13 @@ jobs:
     - name: find the size info
       run: echo ::set-env name=SIZE::$(docker inspect my-image-name:latest --format "{{.Size}}")
     - name: find the baseline size
-      run: echo ::set-env name=PRE_SIZE::$(git tag -n -l size_baseline | sed 's!size_baseline\s*\([0-9]*\)!\1!')
+      run: echo ::set-env name=PRE_BASE_SIZE::$(cat ${{github.workspace}}/size_baseline | jq .base)
+    - name: find the baseline tools size
+      run: echo ::set-env name=PRE_TOOLS_SIZE::$(cat ${{github.workspace}}/size_baseline | jq .tools)
+      
     - name: update a comment with size
       run: |
-        echo "pull id $ISSUEID size $SIZE pre $PRE_SIZE"  && \
+        echo "pull id $ISSUEID size $SIZE pre $PRE_BASE_SIZE,$PRE_TOOLS_SIZE"  && \
         git tag -n -l && \
         curl --request POST \
         --url https://api.github.com/repos/${{ github.repository }}/issues/$ISSUEID/comments \
@@ -35,7 +36,7 @@ jobs:
         --header 'content-type: application/json' \
         --header 'Accept: application/vnd.github.v3+json' \
         --data "{
-          \"body\": \"Image size with this change is $(($SIZE / 1048576))MB, delta $(($SIZE / 1048576 - $PRE_SIZE))MB\"
+          \"body\": \"Image size with this change is $(($SIZE / 1048576))MB, delta $(($SIZE / 1048576 - $PRE_BASE_SIZE))MB\"
           }"
 
     #- uses: edyoung/docker-image-size-action@master
