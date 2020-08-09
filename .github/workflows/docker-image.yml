@@ -20,3 +20,4 @@ jobs:
     - uses: edyoung/docker-image-size-action@master
       with:
         image-name: 'my-image-name'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
