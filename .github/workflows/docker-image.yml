@@ -17,9 +17,10 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
+    - name: find the pull request id
+      run: echo ::set-env name=ISSUEID::$(echo "${{github.ref }}" | sed 's!refs/pull/\([0-9]*\)/merge!\1!') 
     - name: update a comment with size
       run: |
-        ::set-env name=ISSUEID::$(echo "${{github.ref }}" | sed 's!refs/pull/\([0-9]*\)/merge!\1!') \
         echo "pull id $ISSUEID ref " \
         curl --request POST \
         --url https://api.github.com/repos/${{ github.repository }}/issues/$ISSUEID/comments \
